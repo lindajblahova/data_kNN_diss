@@ -25,13 +25,27 @@ def plot_line_plots(data, diagnosis, title):
     plt.show()
 
 
-# Load data
-filename = "DATAPhD_binary.csv"
+# Strings to replace
+strings_to_replace = ['CaE', 'caE', 'iné', 'cysta', 'endom', 'col', 'U']
+
+# Read the CSV file into a DataFrame
+filename = 'DATAPhD.csv'
 df = pd.read_csv(filename, sep=';')
-class_labels = df['diagnosis'].unique()
 
 # Convert ',' to '.' in numeric columns
 df.iloc[:, 1:] = df.iloc[:, 1:].map(lambda x: float(x.replace(',', '.')) if isinstance(x, str) else x)
+
+# Replace specified strings in the first column
+df['diagnosis'] = df['diagnosis'].replace(strings_to_replace, 'pos', regex=True)
+
+# Write the modified DataFrame back to the CSV file
+filename = 'DATAPhD_bin.csv'
+df.to_csv(filename, index=False)
+
+# Load binary data
+filename = "DATAPhD_bin.csv"
+df = pd.read_csv(filename, sep=',')
+class_labels = df['diagnosis'].unique()
 
 # Drop rows with missing values
 df = df.dropna()
